@@ -10,6 +10,7 @@
   const mainContent = document.getElementById('main-content');
   const loading = document.getElementById('loading');
   const nav = document.getElementById('nav');
+  const navLogo = document.getElementById('navLogo');
   const navLinks = document.getElementById('navLinks');
   const navToggle = document.getElementById('navToggle');
   const footerLinks = document.getElementById('footerLinks');
@@ -45,6 +46,9 @@
   function renderSections(data) {
     siteData = data.site || {};
     sectionsData = data.sections || [];
+
+    // Update logo (text or image)
+    updateLogo(siteData);
 
     // Update document title
     document.title = `${siteData.name} · ${siteData.subtitle} — ${siteData.tagline}`;
@@ -113,6 +117,16 @@
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+  }
+
+  // ─── Logo Update ──────────────────────────────────────
+  function updateLogo(site) {
+    if (!navLogo) return;
+    if (site.logoType === 'image' && site.logoUrl) {
+      navLogo.innerHTML = `<img src="${escapeHtml(site.logoUrl)}" alt="${escapeHtml(site.name)}">`;
+    } else {
+      navLogo.innerHTML = `${escapeHtml(site.name)}<small>· ${escapeHtml(site.subtitle)}</small>`;
+    }
   }
 
   // ─── Navigation Active State ────────────────────────────

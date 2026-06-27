@@ -475,7 +475,7 @@ app.put('/api/site', requireAuth, (req, res) => {
   const data = readJSON(CONTENT_FILE);
   if (!data) return res.status(500).json({ error: '内容数据不存在' });
 
-  const allowedFields = ['name', 'subtitle', 'tagline', 'description', 'logo', 'footerText'];
+  const allowedFields = ['name', 'subtitle', 'tagline', 'description', 'logo', 'logoType', 'logoUrl', 'footerText'];
   allowedFields.forEach(field => {
     if (req.body[field] !== undefined) {
       data.site[field] = req.body[field];

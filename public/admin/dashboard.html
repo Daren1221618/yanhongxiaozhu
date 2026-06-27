@@ -315,6 +315,17 @@
           <label>品牌描述</label>
           <input type="text" id="siteDescription">
         </div>
+        <div class="form-group">
+          <label>Logo 类型</label>
+          <select id="siteLogoType" onchange="toggleLogoFields()">
+            <option value="text">文字 Logo</option>
+            <option value="image">图片 Logo</option>
+          </select>
+        </div>
+        <div class="form-group" id="logoUrlGroup" style="display:none;">
+          <label>Logo 图片地址</label>
+          <input type="text" id="siteLogoUrl" placeholder="https://example.com/logo.png">
+        </div>
         <div class="form-group full">
           <label>页脚版权文本</label>
           <input type="text" id="siteFooterText">
@@ -465,7 +476,10 @@
       document.getElementById('siteSubtitle').value = siteData.subtitle || '';
       document.getElementById('siteTagline').value = siteData.tagline || '';
       document.getElementById('siteDescription').value = siteData.description || '';
+      document.getElementById('siteLogoType').value = siteData.logoType || 'text';
+      document.getElementById('siteLogoUrl').value = siteData.logoUrl || '';
       document.getElementById('siteFooterText').value = siteData.footerText || '';
+      toggleLogoFields();
     }
 
     async function saveSiteSettings() {
@@ -474,6 +488,8 @@
         subtitle: document.getElementById('siteSubtitle').value.trim(),
         tagline: document.getElementById('siteTagline').value.trim(),
         description: document.getElementById('siteDescription').value.trim(),
+        logoType: document.getElementById('siteLogoType').value,
+        logoUrl: document.getElementById('siteLogoUrl').value.trim(),
         footerText: document.getElementById('siteFooterText').value.trim()
       };
 
@@ -494,6 +510,12 @@
       } catch (err) {
         showToast('网络错误', 'error');
       }
+    }
+
+    // ─── Logo Fields Toggle ────────────────────────────
+    function toggleLogoFields() {
+      const type = document.getElementById('siteLogoType').value;
+      document.getElementById('logoUrlGroup').style.display = type === 'image' ? 'flex' : 'none';
     }
 
     document.getElementById('siteSettingsLink').addEventListener('click', (e) => {

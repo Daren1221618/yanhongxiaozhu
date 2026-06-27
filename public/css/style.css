@@ -140,14 +140,25 @@ ul, ol { list-style: none; }
   color: var(--color-primary-dark);
   letter-spacing: 0.05em;
   white-space: nowrap;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+}
+
+.nav-logo img {
+  height: 2.2rem;
+  width: auto;
+  display: block;
 }
 
 .nav-logo small {
-  font-size: 0.7rem;
-  font-weight: 400;
-  color: var(--color-text-muted);
-  margin-left: var(--space-xs);
-  letter-spacing: 0.1em;
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--color-gold);
+  margin-left: 0;
+  letter-spacing: 0.05em;
 }
 
 .nav-links {
@@ -281,24 +292,26 @@ ul, ol { list-style: none; }
 
 .hero-badge {
   display: inline-block;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
   color: var(--color-primary);
   border: 1px solid var(--color-primary-light);
-  padding: var(--space-xs) var(--space-lg);
+  padding: var(--space-sm) var(--space-2xl);
   border-radius: 100px;
   margin-bottom: var(--space-2xl);
 }
 
 .hero-title {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: 0.04em;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
   color: var(--color-text);
   margin-bottom: var(--space-xl);
+  text-shadow: 0 2px 8px rgba(184, 58, 58, 0.06);
 }
 
 .hero-title em {
@@ -1290,7 +1303,7 @@ ul, ol { list-style: none; }
   .section { padding: var(--space-3xl) var(--space-md); }
   .section-title { font-size: 1.6rem; }
 
-  .hero-title { font-size: clamp(1.8rem, 8vw, 3rem); }
+  .hero-title { font-size: clamp(2rem, 9vw, 3.5rem); }
   .hero-desc { font-size: 0.95rem; }
 
   .pain-grid { grid-template-columns: 1fr; }
@@ -1323,7 +1336,7 @@ ul, ol { list-style: none; }
 /* Small Mobile */
 @media (max-width: 480px) {
   .section-title { font-size: 1.4rem; }
-  .hero-badge { font-size: 0.7rem; padding: var(--space-xs) var(--space-md); }
+  .hero-badge { font-size: 0.9rem; padding: var(--space-sm) var(--space-xl); }
   .hero-tags { gap: var(--space-sm); }
   .hero-tags span { font-size: 0.75rem; padding: var(--space-xs) var(--space-md); }
   .stats-row { grid-template-columns: 1fr; }

@@ -82,8 +82,8 @@ ${cssRaw}
   <!-- Navigation -->
   <nav class="nav" id="nav">
     <div class="nav-inner">
-      <a href="#hero" class="nav-logo">
-        ${escapeHtml(site.logo || site.name)}<small>· ${escapeHtml(site.subtitle)}</small>
+      <a href="#hero" class="nav-logo" id="navLogo">
+        ${(site.logoType === 'image' && site.logoUrl) ? `<img src="${escapeHtml(site.logoUrl)}" alt="${escapeHtml(site.name)}">` : `${escapeHtml(site.name)}<small>· ${escapeHtml(site.subtitle)}</small>`}
       </a>
       <div class="nav-links" id="navLinks">
         ${navHTML}
