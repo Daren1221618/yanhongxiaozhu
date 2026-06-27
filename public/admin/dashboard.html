@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>嫣红小主 · 内容管理</title>
+  <style>
+    :root {
+      --primary: #B83A3A;
+      --primary-dark: #7A1F1F;
+      --gold: #C9A050;
+      --bg: #FDF8F0;
+      --surface: #FFFBF5;
+      --text: #1F1D19;
+      --text-secondary: #6B6560;
+      --border: #D8D0C8;
+      --font-display: 'Noto Serif SC', serif;
+      --font-body: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+      --sidebar-width: 240px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--text);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      overflow-y: auto;
+    }
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--gold);
+    }
+    .sidebar-header p {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 0.25rem;
+    }
+    .sidebar-nav {
+      flex: 1;
+      padding: 0.75rem 0;
+    }
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      padding: 0.7rem 1.5rem;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      transition: all 0.2s;
+      gap: 0.5rem;
+      border-left: 2px solid transparent;
+    }
+    .sidebar-nav a:hover {
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+    }
+    .sidebar-nav a.active {
+      background: rgba(255,255,255,0.08);
+      color: var(--gold);
+      border-left-color: var(--gold);
+    }
+    .sidebar-nav a .num {
+      font-size: 0.7rem;
+      opacity: 0.5;
+      min-width: 1.5rem;
+    }
+    .sidebar-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-footer a {
+      display: block;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      padding: 0.35rem 0;
+      transition: color 0.2s;
+    }
+    .sidebar-footer a:hover { color: #fff; }
+
+    /* Main */
+    .main {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2rem;
+      max-width: calc(100% - var(--sidebar-width));
+    }
+    .main-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .main-header h1 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--primary-dark);
+    }
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .btn {
+      padding: 0.55rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-secondary);
+    }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-gold {
+      background: var(--gold);
+      color: #fff;
+    }
+    .btn-gold:hover { opacity: 0.9; }
+    .btn-sm { padding: 0.35rem 0.85rem; font-size: 0.8rem; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Editor */
+    .editor-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-group input,
+    .form-group textarea {
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+      background: var(--bg);
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(184,58,58,0.06);
+    }
+    .form-group textarea {
+      min-height: 400px;
+      resize: vertical;
+      font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+    .form-group .hint {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      padding: 0.85rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #fff;
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .toast.success { background: #4A9C5D; }
+    .toast.error { background: var(--primary); }
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Site settings */
+    .site-settings { display: none; }
+    .site-settings.active { display: block; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        z-index: 100;
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; max-width: 100%; }
+      .form-row { grid-template-columns: 1fr; }
+      .mobile-toggle {
+        display: block !important;
+      }
+    }
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 101;
+      background: var(--text);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button class="mobile-toggle" id="mobileToggle" onclick="toggleSidebar()">☰</button>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>嫣红小主</h2>
+      <p>内容管理系统</p>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+    <div class="sidebar-footer">
+      <a href="#" id="siteSettingsLink">⚙ 站点设置</a>
+      <a href="/" target="_blank">👁 预览网站</a>
+      <a href="#" id="logoutLink">🚪 退出登录</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main" id="mainContent">
+    <div class="main-header">
+      <h1 id="editorTitle">选择章节开始编辑</h1>
+      <div class="header-actions">
+        <button class="btn btn-outline btn-sm" onclick="previewSection()">预览当前章节</button>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveSection()" disabled>保存修改</button>
+      </div>
+    </div>
+
+    <!-- Section Editor -->
+    <div class="editor-panel" id="sectionEditor">
+      <p style="color:var(--text-secondary);text-align:center;padding:3rem;">👈 从左侧菜单选择一个章节开始编辑</p>
+    </div>
+
+    <!-- Site Settings -->
+    <div class="editor-panel site-settings" id="siteSettings">
+      <h3 style="font-family:var(--font-display);margin-bottom:1.5rem;color:var(--primary-dark);">站点全局设置</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>品牌名称</label>
+          <input type="text" id="siteName">
+        </div>
+        <div class="form-group">
+          <label>副标题</label>
+          <input type="text" id="siteSubtitle">
+        </div>
+        <div class="form-group">
+          <label>品牌标语 (Tagline)</label>
+          <input type="text" id="siteTagline">
+        </div>
+        <div class="form-group">
+          <label>品牌描述</label>
+          <input type="text" id="siteDescription">
+        </div>
+        <div class="form-group full">
+          <label>页脚版权文本</label>
+          <input type="text" id="siteFooterText">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveSiteSettings()">保存站点设置</button>
+    </div>
+  </main>
+
+  <script>
+    let sectionsData = [];
+    let siteData = {};
+    let currentSectionId = null;
+
+    // ─── Auth Check ───────────────────────────────────────
+    async function checkAuth() {
+      const res = await fetch('/api/check-auth');
+      const data = await res.json();
+      if (!data.authenticated) {
+        window.location.href = '/admin/login.html';
+      }
+    }
+
+    // ─── Load Data ────────────────────────────────────────
+    async function loadData() {
+      const res = await fetch('/api/sections');
+      const data = await res.json();
+      sectionsData = data.sections;
+      siteData = data.site;
+      buildSidebar();
+      populateSiteSettings();
+    }
+
+    // ─── Sidebar ──────────────────────────────────────────
+    function buildSidebar() {
+      const nav = document.getElementById('sidebarNav');
+      let html = '';
+
+      sectionsData.forEach((section, index) => {
+        const num = String(index + 1).padStart(2, '0');
+        const label = section.navLabel || section.title;
+        html += `<a href="#" onclick="selectSection('${section.id}');return false;" data-id="${section.id}">
+          <span class="num">${num}</span>${escapeHtml(label)}
+        </a>`;
+      });
+
+      nav.innerHTML = html;
+    }
+
+    function selectSection(id) {
+      currentSectionId = id;
+      const section = sectionsData.find(s => s.id === id);
+      if (!section) return;
+
+      // Update sidebar active
+      document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.sidebar-nav a[data-id="${id}"]`);
+      if (link) link.classList.add('active');
+
+      // Update editor
+      document.getElementById('editorTitle').textContent = `编辑：${section.title}`;
+      document.getElementById('sectionEditor').style.display = 'block';
+      document.getElementById('siteSettings').classList.remove('active');
+      document.getElementById('saveBtn').disabled = false;
+
+      document.getElementById('sectionEditor').innerHTML = `
+        <div class="form-row">
+          <div class="form-group">
+            <label>章节标题</label>
+            <input type="text" id="editTitle" value="${escapeAttr(section.title)}">
+          </div>
+          <div class="form-group">
+            <label>副标题</label>
+            <input type="text" id="editSubtitle" value="${escapeAttr(section.subtitle || '')}">
+          </div>
+          <div class="form-group">
+            <label>导航标签</label>
+            <input type="text" id="editNavLabel" value="${escapeAttr(section.navLabel || '')}">
+            <span class="hint">显示在顶部导航和侧边栏中的简短名称</span>
+          </div>
+          <div class="form-group">
+            <label>排序</label>
+            <input type="text" value="No. ${String(sectionsData.indexOf(section) + 1).padStart(2, '0')}" readonly disabled>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>内容 (HTML) <span class="hint">— 支持HTML标签，可使用 &lt;div&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;blockquote&gt; 等</span></label>
+          <textarea id="editContent">${escapeHtml(section.content || '')}</textarea>
+        </div>
+      `;
+
+      // Close mobile sidebar
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    }
+
+    // ─── Save Section ─────────────────────────────────────
+    async function saveSection() {
+      if (!currentSectionId) return;
+
+      const title = document.getElementById('editTitle').value.trim();
+      const subtitle = document.getElementById('editSubtitle').value.trim();
+      const navLabel = document.getElementById('editNavLabel').value.trim();
+      const content = document.getElementById('editContent').value;
+
+      if (!title) { showToast('请输入章节标题', 'error'); return; }
+
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true;
+      btn.textContent = '保存中...';
+
+      try {
+        const res = await fetch(`/api/sections/${currentSectionId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, subtitle, navLabel, content })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          showToast('保存成功！请刷新网站首页查看效果', 'success');
+          // Update local data
+          const idx = sectionsData.findIndex(s => s.id === currentSectionId);
+          if (idx !== -1) {
+            sectionsData[idx] = data.section;
+          }
+        } else {
+          showToast(data.error || '保存失败', 'error');
+        }
+      } catch (err) {
+        showToast('网络错误，请重试', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '保存修改';
+      }
+    }
+
+    // ─── Preview ──────────────────────────────────────────
+    function previewSection() {
+      if (!currentSectionId) return;
+      window.open(`/#${currentSectionId}`, '_blank');
+    }
+
+    // ─── Site Settings ────────────────────────────────────
+    function populateSiteSettings() {
+      document.getElementById('siteName').value = siteData.name || '';
+      document.getElementById('siteSubtitle').value = siteData.subtitle || '';
+      document.getElementById('siteTagline').value = siteData.tagline || '';
+      document.getElementById('siteDescription').value = siteData.description || '';
+      document.getElementById('siteFooterText').value = siteData.footerText || '';
+    }
+
+    async function saveSiteSettings() {
+      const siteData2 = {
+        name: document.getElementById('siteName').value.trim(),
+        subtitle: document.getElementById('siteSubtitle').value.trim(),
+        tagline: document.getElementById('siteTagline').value.trim(),
+        description: document.getElementById('siteDescription').value.trim(),
+        footerText: document.getElementById('siteFooterText').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/site', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(siteData2)
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          siteData = data.site;
+          showToast('站点设置保存成功！', 'success');
+        } else {
+          showToast(data.error || '保存失败', 'error');
+        }
+      } catch (err) {
+        showToast('网络错误', 'error');
+      }
+    }
+
+    document.getElementById('siteSettingsLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      currentSectionId = null;
+      document.getElementById('editorTitle').textContent = '站点全局设置';
+      document.getElementById('sectionEditor').style.display = 'none';
+      document.getElementById('siteSettings').classList.add('active');
+      document.getElementById('saveBtn').disabled = true;
+      document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    });
+
+    // ─── Logout ───────────────────────────────────────────
+    document.getElementById('logoutLink').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = '/admin/login.html';
+    });
+
+    // ─── Toast ────────────────────────────────────────────
+    function showToast(message, type) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ─── Mobile Sidebar ───────────────────────────────────
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    // ─── Helpers ──────────────────────────────────────────
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function escapeAttr(str) {
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ─── Init ─────────────────────────────────────────────
+    async function init() {
+      await checkAuth();
+      await loadData();
+    }
+
+    init();
+  </script>
+</body>
+</html>

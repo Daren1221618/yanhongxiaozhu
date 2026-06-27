@@ -1,0 +1,19 @@
+# 嫣红小主 · 花果茶鲜酿 — Railway 部署配置
+
+[build]
+  builder = "nixpacks"
+  # Railway auto-detects Node.js from package.json
+
+[deploy]
+  numReplicas = 1
+  # 单实例确保内存 session 和文件锁不冲突
+
+  # 持久化数据卷 — 保证 CMS 修改不丢失
+  [deploy.volumes]
+    mountPath = "/app/data"
+    # Railway 会将 /app/data 挂载到持久化存储
+
+# 服务定义
+[service]
+  # 健康检查
+  healthcheckPath = "/api/check-auth"

@@ -1,0 +1,19 @@
+{
+  "name": "yanhong-xiaozhu",
+  "version": "1.0.0",
+  "description": "嫣红小主 · 花果茶鲜酿 - 官方网站",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "node build.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "bcryptjs": "^2.4.3",
+    "express-session": "^1.17.3"
+  }
+}
