@@ -2,7 +2,7 @@
 node_modules/
 
 # 运行时数据（部署时由 volume 挂载）
-data/
+data/users.json
 
 # 构建产物
 dist/
