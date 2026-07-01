@@ -41,7 +41,23 @@ function writeJSON(filepath, data) {
 
 // ─── Initialize Default Content ───────────────────────────
 function initContent() {
-  if (fs.existsSync(CONTENT_FILE)) return;
+  // Auto-fix: remove inline grid-template-columns from existing content.json
+  if (fs.existsSync(CONTENT_FILE)) {
+    let data = readJSON(CONTENT_FILE);
+    let changed = false;
+    if (data && data.sections) {
+      for (let s of data.sections) {
+        let old = s.content;
+        s.content = s.content.replace(/\s*style="[^"]*grid-template-columns:\s*repeat\([^"]+\)[^"]*"/g, '');
+        if (s.content !== old) changed = true;
+      }
+    }
+    if (changed) {
+      writeJSON(CONTENT_FILE, data);
+      console.log('✅ 已自动移除 content.json 中的内联 grid 样式');
+    }
+    return;
+  }
 
   const defaultContent = {
     site: {
