@@ -1273,6 +1273,19 @@ ul, ol { list-style: none; }
   .case-grid { grid-template-columns: 1fr; }
   .vision-timeline { grid-template-columns: 1fr; }
   .team-assets { grid-template-columns: 1fr; }
+  .model-tier { flex-direction: column; }
+  .tier-metrics { flex-direction: column; }
+  .timing-item { flex-direction: column; gap: var(--space-md); }
+  .timing-num { font-size: 3rem; width: auto; text-align: left; }
+  .roi-cards { flex-direction: column; align-items: center; }
+  .roi-card { width: 100%; max-width: 100%; }
+  .finance-hero { flex-direction: column; align-items: center; }
+  .finance-card { width: 100%; max-width: 100%; }
+  .path-steps { flex-direction: column; }
+  .path-arrow { transform: rotate(90deg); }
+  .ap-row { grid-template-columns: 1fr; }
+  .ap-key { padding: var(--space-sm) var(--space-md); }
+  .ap-val { padding: var(--space-sm) var(--space-md); }
 
   .nav-links { display: none; }
   .nav-links.open {
