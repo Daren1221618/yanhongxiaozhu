@@ -570,8 +570,8 @@ ul, ol { list-style: none; }
 
 .timing-item {
   display: flex;
-  gap: var(--space-2xl);
-  align-items: flex-start;
+  flex-direction: column;
+  gap: var(--space-md);
 }
 
 .timing-num {
@@ -582,8 +582,6 @@ ul, ol { list-style: none; }
   opacity: 0.08;
   line-height: 0.8;
   flex-shrink: 0;
-  width: 100px;
-  text-align: right;
 }
 
 .timing-body {
@@ -707,10 +705,10 @@ ul, ol { list-style: none; }
 
 .path-steps {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--space-xl);
-  flex-wrap: wrap;
 }
 
 .path-step {
@@ -748,6 +746,7 @@ ul, ol { list-style: none; }
 .path-arrow {
   font-size: 1.5rem;
   color: var(--color-gold);
+  transform: rotate(90deg);
 }
 
 .path-note {
@@ -834,8 +833,9 @@ ul, ol { list-style: none; }
   border-radius: var(--radius-xl);
   padding: var(--space-2xl);
   display: flex;
+  flex-direction: column;
   gap: var(--space-2xl);
-  align-items: flex-start;
+  align-items: stretch;
   transition: border-color var(--transition-normal);
 }
 
@@ -882,8 +882,8 @@ ul, ol { list-style: none; }
 
 .tier-metrics {
   display: flex;
+  flex-direction: column;
   gap: var(--space-lg);
-  flex-wrap: wrap;
 }
 
 .tier-metrics span {
@@ -951,10 +951,10 @@ ul, ol { list-style: none; }
 /* ─── Finance Section ───────────────────────────────────── */
 .finance-hero {
   display: flex;
+  flex-direction: column;
   gap: var(--space-xl);
-  justify-content: center;
+  align-items: center;
   margin-bottom: var(--space-3xl);
-  flex-wrap: wrap;
 }
 
 .finance-card {
@@ -963,7 +963,7 @@ ul, ol { list-style: none; }
   background: var(--color-surface);
   border: 1px solid var(--color-border-light);
   border-radius: var(--radius-xl);
-  min-width: 180px;
+  width: 100%;
 }
 
 .finance-card.main {
@@ -1062,9 +1062,9 @@ ul, ol { list-style: none; }
 
 .roi-cards {
   display: flex;
+  flex-direction: column;
   gap: var(--space-lg);
-  justify-content: center;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
 .roi-card {
@@ -1073,7 +1073,7 @@ ul, ol { list-style: none; }
   background: var(--color-surface);
   border: 1px solid var(--color-border-light);
   border-radius: var(--radius-lg);
-  min-width: 150px;
+  width: 100%;
 }
 
 .roi-card.highlight {
