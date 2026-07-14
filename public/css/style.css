@@ -1350,6 +1350,10 @@ ul, ol { list-style: none; }
   .path-arrow { transform: rotate(90deg); }
 
   .footer-links { flex-direction: column; gap: var(--space-md); }
+
+  .drive-col { padding: var(--space-lg); }
+  .drive-header h3 { font-size: 1.15rem; }
+  .drive-item { font-size: 0.85rem !important; line-height: 1.7; }
 }
 
 /* Small Mobile */
@@ -1361,6 +1365,7 @@ ul, ol { list-style: none; }
   .stats-row { grid-template-columns: 1fr; }
 
   .nav-logo { font-size: 1.1rem; }
+  .drive-item > span { font-size: 0.9rem !important; }
 }
 
 /* ─── Scroll Animations ─────────────────────────────────── */
