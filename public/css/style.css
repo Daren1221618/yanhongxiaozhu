@@ -553,18 +553,15 @@ ul, ol { list-style: none; }
   box-shadow: var(--shadow-md);
 }
 
-.value-card h4 {
+.value-card h4,
+.value-card p {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-primary-dark);
-  margin-bottom: var(--space-sm);
-}
-
-.value-card p {
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
+  text-align: center;
+  margin: 0;
+  padding: 2px 0;
 }
 
 /* ─── Timeline ──────────────────────────────────────────── */
