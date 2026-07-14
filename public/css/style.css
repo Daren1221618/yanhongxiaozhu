@@ -511,7 +511,8 @@ ul, ol { list-style: none; }
   line-height: 1.6;
 }
 
-.drive-item > span {
+.drive-item > span,
+.drive-item strong {
   display: inline-block;
   white-space: nowrap;
   flex-shrink: 0;
