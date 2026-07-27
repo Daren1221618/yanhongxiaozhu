@@ -486,6 +486,36 @@ app.put('/api/sections/:id', requireAuth, (req, res) => {
   res.json({ success: true, section: data.sections[index] });
 });
 
+// Reorder sections (admin only)
+app.put('/api/sections/reorder', requireAuth, (req, res) => {
+  const { orderedIds } = req.body;
+  if (!Array.isArray(orderedIds)) {
+    return res.status(400).json({ error: 'orderedIds 必须是数组' });
+  }
+  const data = readJSON(CONTENT_FILE);
+  if (!data) return res.status(500).json({ error: '内容数据不存在' });
+
+  const sectionMap = {};
+  data.sections.forEach(s => { sectionMap[s.id] = s; });
+
+  if (orderedIds.length !== data.sections.length) {
+    return res.status(400).json({ error: 'ID 数量与章节数量不匹配' });
+  }
+
+  const reordered = [];
+  for (let i = 0; i < orderedIds.length; i++) {
+    const s = sectionMap[orderedIds[i]];
+    if (!s) return res.status(400).json({ error: `未找到章节: ${orderedIds[i]}` });
+    s.order = i + 1;
+    reordered.push(s);
+  }
+  data.sections = reordered;
+  data.sections.forEach(s => { s.updatedAt = new Date().toISOString(); });
+
+  writeJSON(CONTENT_FILE, data);
+  res.json({ success: true, sections: data.sections });
+});
+
 // Update site settings (admin only)
 app.put('/api/site', requireAuth, (req, res) => {
   const data = readJSON(CONTENT_FILE);

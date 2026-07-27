@@ -81,6 +81,46 @@
       opacity: 0.5;
       min-width: 1.5rem;
     }
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .sidebar-nav-item a {
+      flex: 1;
+    }
+    .sidebar-nav-item .reorder-btns {
+      display: none;
+      flex-direction: column;
+      gap: 1px;
+      padding-right: 0.5rem;
+    }
+    .sidebar-nav-item:hover .reorder-btns {
+      display: flex;
+    }
+    .reorder-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      font-size: 0.6rem;
+      padding: 2px 5px;
+      border-radius: 3px;
+      line-height: 1;
+      transition: all 0.15s;
+    }
+    .reorder-btn:hover {
+      background: var(--gold);
+      color: #fff;
+    }
+    .reorder-btn:disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+    }
+    .reorder-btn:disabled:hover {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.4);
+    }
     .sidebar-footer {
       padding: 1rem 1.5rem;
       border-top: 1px solid rgba(255,255,255,0.1);
@@ -367,9 +407,17 @@
       sectionsData.forEach((section, index) => {
         const num = String(index + 1).padStart(2, '0');
         const label = section.navLabel || section.title;
-        html += `<a href="#" onclick="selectSection('${section.id}');return false;" data-id="${section.id}">
-          <span class="num">${num}</span>${escapeHtml(label)}
-        </a>`;
+        const isFirst = index === 0;
+        const isLast = index === sectionsData.length - 1;
+        html += `<div class="sidebar-nav-item">
+          <a href="#" onclick="selectSection('${section.id}');return false;" data-id="${section.id}">
+            <span class="num">${num}</span>${escapeHtml(label)}
+          </a>
+          <div class="reorder-btns">
+            <button class="reorder-btn" title="上移" onclick="moveSection('${section.id}', -1);event.stopPropagation();" ${isFirst ? 'disabled' : ''}>▲</button>
+            <button class="reorder-btn" title="下移" onclick="moveSection('${section.id}', 1);event.stopPropagation();" ${isLast ? 'disabled' : ''}>▼</button>
+          </div>
+        </div>`;
       });
 
       nav.innerHTML = html;
@@ -408,7 +456,7 @@
           </div>
           <div class="form-group">
             <label>排序</label>
-            <input type="text" value="No. ${String(sectionsData.indexOf(section) + 1).padStart(2, '0')}" readonly disabled>
+            <input type="text" id="editOrder" value="No. ${String(sectionsData.indexOf(section) + 1).padStart(2, '0')}" readonly>
           </div>
         </div>
         <div class="form-group full">
@@ -420,6 +468,40 @@
       // Close mobile sidebar
       if (window.innerWidth <= 768) {
         document.getElementById('sidebar').classList.remove('open');
+      }
+    }
+
+    // ─── Reorder Section ──────────────────────────────────
+    async function moveSection(id, direction) {
+      const index = sectionsData.findIndex(s => s.id === id);
+      if (index === -1) return;
+      const newIndex = index + direction;
+      if (newIndex < 0 || newIndex >= sectionsData.length) return;
+
+      // Swap in local array
+      [sectionsData[index], sectionsData[newIndex]] = [sectionsData[newIndex], sectionsData[index]];
+
+      // Persist to server
+      const orderedIds = sectionsData.map(s => s.id);
+      try {
+        const res = await fetch('/api/sections/reorder', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderedIds })
+        });
+        const data = await res.json();
+        if (data.success) {
+          sectionsData = data.sections;
+          buildSidebar();
+          showToast('排序已更新', 'success');
+        } else {
+          // Revert local swap on error
+          [sectionsData[index], sectionsData[newIndex]] = [sectionsData[newIndex], sectionsData[index]];
+          showToast(data.error || '排序失败', 'error');
+        }
+      } catch (err) {
+        [sectionsData[index], sectionsData[newIndex]] = [sectionsData[newIndex], sectionsData[index]];
+        showToast('网络错误', 'error');
       }
     }
 
