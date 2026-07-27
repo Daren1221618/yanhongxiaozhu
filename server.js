@@ -498,22 +498,37 @@ app.put('/api/sections/reorder', requireAuth, (req, res) => {
   const sectionMap = {};
   data.sections.forEach(s => { sectionMap[s.id] = s; });
 
-  if (orderedIds.length !== data.sections.length) {
-    return res.status(400).json({ error: 'ID 数量与章节数量不匹配' });
+  // Filter to only IDs that exist in current data (graceful mismatch)
+  const validIds = orderedIds.filter(id => sectionMap[id]);
+  const missingIds = orderedIds.filter(id => !sectionMap[id]);
+  
+  // Keep unmoved sections at their current position
+  const remainingIds = data.sections.map(s => s.id).filter(id => !validIds.includes(id));
+
+  if (validIds.length === 0) {
+    return res.status(400).json({ error: '没有有效的章节ID' });
   }
 
+  // Build reordered list: validIds in new order, then remaining in original order
   const reordered = [];
-  for (let i = 0; i < orderedIds.length; i++) {
-    const s = sectionMap[orderedIds[i]];
-    if (!s) return res.status(400).json({ error: `未找到章节: ${orderedIds[i]}` });
-    s.order = i + 1;
+  for (const id of validIds) {
+    const s = sectionMap[id];
+    s.order = reordered.length + 1;
     reordered.push(s);
   }
+  for (const id of remainingIds) {
+    const s = sectionMap[id];
+    s.order = reordered.length + 1;
+    reordered.push(s);
+  }
+  
   data.sections = reordered;
   data.sections.forEach(s => { s.updatedAt = new Date().toISOString(); });
 
   writeJSON(CONTENT_FILE, data);
-  res.json({ success: true, sections: data.sections });
+  res.json({ success: true, sections: data.sections, 
+    note: missingIds.length ? `已忽略 ${missingIds.length} 个不匹配的ID` : undefined 
+  });
 });
 
 // Update site settings (admin only)
