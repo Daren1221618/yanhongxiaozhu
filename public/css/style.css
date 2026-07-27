@@ -1347,6 +1347,9 @@ ul, ol { list-style: none; }
   .path-steps { flex-direction: column; }
   .path-arrow { transform: rotate(90deg); }
 
+  /* 品牌画布九宫格 → 双列 */
+  .canvas-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
   .footer-links { flex-direction: column; gap: var(--space-md); }
 
   .drive-col { padding: var(--space-lg); }
@@ -1364,6 +1367,9 @@ ul, ol { list-style: none; }
 
   .nav-logo { font-size: 1.1rem; }
   .drive-item > span { font-size: 0.9rem !important; }
+
+  /* 品牌画布九宫格 → 单列 */
+  .canvas-grid { grid-template-columns: 1fr !important; }
 }
 
 /* ─── Scroll Animations ─────────────────────────────────── */
